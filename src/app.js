@@ -76,7 +76,7 @@ app.get('/sales/:id', async (req, res) => {
 
 // Validar o campo ProductID com MIDDLEWARES 
 
-app.post('/sales', validations.validateSale, async (req, res) => { 
+app.post('/sales', validations.validateSaleTypos, validations.validateSale, async (req, res) => { 
   const newSale = req.body;
   const [{ insertId }] = await salesDB.insert(new Date());
   await Promise.all(newSale
