@@ -1,4 +1,6 @@
 const express = require('express');
+require('express-async-errors');
+
 const productsDB = require('./services/productsDB');
 const salesDB = require('./services/salesDB');
 const validations = require('./services/validationMiddlewares');
@@ -72,22 +74,19 @@ app.get('/sales/:id', async (req, res) => {
   }
 });
 
-module.exports = app;
+// Validar o campo ProductID com MIDDLEWARES 
 
-// [
-//   {
-//     "sale_id": 1,
-//     "product_id": 1,
-//     "quantity": 5
-//   },
-//   {
-//     "sale_id": 1,
-//     "product_id": 2,
-//     "quantity": 10
-//   },
-//   {
-//     "sale_id": 2,
-//     "product_id": 3,
-//     "quantity": 15
-//   }
-// ]
+app.post('/sales', validations.validateSale, async (req, res) => { 
+  const newSale = req.body;
+  const [{ insertId }] = await salesDB.insert(new Date());
+  await Promise.all(newSale
+    .map((eachProduct) => salesDB.insertSalesProducts(insertId, eachProduct)));
+  // console.log(insertId);
+  const answerModel = {
+    id: insertId,
+    itemsSold: newSale,
+  };
+  res.status(201).json(answerModel);
+});
+  
+module.exports = app;
