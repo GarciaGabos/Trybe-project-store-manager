@@ -21,7 +21,8 @@ app.get('/products', async (_req, res) => {
 
 app.get('/products/:id', async (req, res) => {
     const { id } = req.params;
-    const [[result]] = await productsDB.listById(id);
+  const [[result]] = await productsDB.listById(id);
+  console.log(result);
     if (result) {
       res.status(200).json(result);
     } else {
@@ -74,19 +75,40 @@ app.get('/sales/:id', async (req, res) => {
   }
 });
 
-// Validar o campo ProductID com MIDDLEWARES 
-
 app.post('/sales', validations.validateSaleTypos, validations.validateSale, async (req, res) => { 
   const newSale = req.body;
   const [{ insertId }] = await salesDB.insert(new Date());
   await Promise.all(newSale
     .map((eachProduct) => salesDB.insertSalesProducts(insertId, eachProduct)));
-  // console.log(insertId);
   const answerModel = {
     id: insertId,
     itemsSold: newSale,
   };
   res.status(201).json(answerModel);
 });
-  
+
+app.put('/products/:id', validations.validateProducts, validations.validadeProductId,
+  async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const [result] = await productsDB.update(id, name);
+  // console.log(result.affectedRows);
+  if (result.affectedRows !== 0) {
+    res.status(200).json({
+      id,
+      name,
+    });
+  }
+  });
+
+app.delete('/products/:id', validations.validadeProductId,
+  async (req, res) => {
+    const { id } = req.params;
+    const [result] = await productsDB.remove(id);
+    console.log(result.affectedRows);
+    if (result.affectedRows !== 0) {
+      res.status(204).json({});
+    }
+  });
+
 module.exports = app;

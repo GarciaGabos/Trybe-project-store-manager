@@ -30,6 +30,16 @@ const validateSaleTypos = async (req, res, next) => {
   next();
 };
 
+const validadeProductId = async (req, res, next) => {
+  const { id } = req.params;
+  const [[result]] = await productsDB.listById(id);
+  console.log(result);
+  if (result === undefined) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+  next(); 
+};
+
 const validateSale = async (req, res, next) => {
   const newSales = req.body;
   const productId = newSales.map((sale) => sale.productId);
@@ -51,4 +61,5 @@ module.exports = {
   validateProducts,
   validateSaleTypos,
   validateSale,
+  validadeProductId,
 };
