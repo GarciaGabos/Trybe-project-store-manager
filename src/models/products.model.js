@@ -7,7 +7,6 @@ const listAll = async () => {
 
 const listById = async (id) => {
   const [[result]] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
-  
   return result;
 };
 
