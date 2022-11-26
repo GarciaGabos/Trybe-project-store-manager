@@ -11,5 +11,11 @@ describe('Testes de unidade do model de Produtos', function () {
     const result = await productsModel.listAll();
     expect(result).to.be.deep.equal(productsFromDB);
   });
+
+  it('Listar products por ID', async function () {
+    sinon.stub(connection, 'execute').resolves([productsFromDB]);
+    const result = await productsModel.listById(1);
+    expect(result).to.be.deep.equal(productsFromDB[0]);
+  });
   afterEach(sinon.restore);
 });
