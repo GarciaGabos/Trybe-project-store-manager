@@ -6,11 +6,6 @@ const salesFromDB = require('../models/sales.model.mock');
 const salesService = require('../../../src/services/sales.service');
 
 describe('Testes de unidade do model de Sales', function () {
-  // it('Listar todas as sales', async function () {
-  //   sinon.stub(salesModel, 'listAll').resolves(salesFromDB);
-  //   const result = await salesService.getAllSales();
-  //   expect(result).to.be.deep.equal(salesFromDB);
-  // });
 
   it('Id não existe', async function () {
     const expected = { message: 'Sale not found' };
@@ -19,12 +14,5 @@ describe('Testes de unidade do model de Sales', function () {
     resulWanted = result.message
     expect(resulWanted).to.be.deep.equal(expected);
   });
-
-  // it('Busca por um Id que existe', async function () {
-  //   sinon.stub(salesModel, 'listById').resolves(salesFromDB[0]);
-  //   const result = await salesService.getSaleById(1);
-  //   resulWanted = result.message
-  //   expect(resulWanted).to.be.deep.equal(salesFromDB[0]);
-  // });
   afterEach(sinon.restore);
 });
